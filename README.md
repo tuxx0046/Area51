@@ -1,2 +1,2 @@
 # Area51
-A small project with the purpose of learning basic concurrency in C#
+A small challenge with the goal of learning basic concurrency in C#
