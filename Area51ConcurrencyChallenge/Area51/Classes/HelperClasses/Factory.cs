@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Area51
 {
-    public class Factory
+    public static class Factory
     {
         public static IPerson CreatePerson(int clearanceLevelCount, int numberOfFloors, int personnelId)
         {
@@ -25,6 +25,16 @@ namespace Area51
         public static IScanner CreateScannner()
         {
             return new Scanner();
+        }
+
+        public static ITurret CreateTurret()
+        {
+            return new CeilingTurret();
+        }
+
+        public static IPanel CreatePanel()
+        {
+            return new Panel();
         }
     }
 }

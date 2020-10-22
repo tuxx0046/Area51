@@ -7,7 +7,7 @@
         int SpawnFloor { get; }
         int TargetFloor { get; }
         bool IsDead { get; set; }
-        bool MarkForTermination { get; set; }
+        bool MarkedForTermination { get; set; }
 
 
         void Die();

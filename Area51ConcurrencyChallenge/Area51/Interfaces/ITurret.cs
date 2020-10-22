@@ -2,6 +2,6 @@
 {
     public interface ITurret
     {
-        void EliminateTarget(IPerson person);
+        void EliminateTarget(IPerson person, string floorName);
     }
 }

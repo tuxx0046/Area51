@@ -11,7 +11,7 @@ namespace Area51
         public int TargetFloor { get; }
         public int SpawnFloor { get; }
         public bool IsDead { get; set; } = false;
-        public bool MarkForTermination { get; set; } = false;
+        public bool MarkedForTermination { get; set; } = false;
 
         public Personnel(int clearanceLevel, int targetFloor, int spawnFloor, int staffId)
         {
@@ -23,9 +23,15 @@ namespace Area51
                 $"just spawned at {SpawnFloor} floor and wants to go to {TargetFloor} floor");
         }
 
+        public void CallElevator()
+        {
+            
+        }
+
         public void Die()
         {
-
+            Console.WriteLine($"The intruder {Id} has died");
+            IsDead = true;
         }
 
         public void GoToAdministration()

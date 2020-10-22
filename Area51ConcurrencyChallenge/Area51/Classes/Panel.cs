@@ -8,7 +8,7 @@ namespace Area51
     {
         public void CallElevator()
         {
-
+            // TODO: Add call request to Control elevator queue
         }
     }
 }

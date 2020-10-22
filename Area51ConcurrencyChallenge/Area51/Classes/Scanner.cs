@@ -12,7 +12,7 @@ namespace Area51
         {
             if (person.SecurityCertificate == 0)
             {
-                person.MarkForTermination = true;
+                person.MarkedForTermination = true;
             }
 
             _scanResult = person;
