@@ -22,6 +22,11 @@ namespace Area51
             return new Personnel(clearanceLevel, spawnFloor, targetFloor, personnelId);
         }
 
+        public static Floor CreateFloor(string floorName)
+        {
+            return new Floor(CreatePanel(), CreateScannner(), CreateTurret(), floorName);
+        }
+
         public static IScanner CreateScannner()
         {
             return new Scanner();
