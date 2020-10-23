@@ -20,7 +20,7 @@ namespace Area51
             SpawnFloor = spawnFloor;
             Id = "Staff" + staffId.ToString();
             Console.WriteLine($"{Id} with clearance level {SecurityCertificate} " +
-                $"just spawned at {SpawnFloor} floor and wants to go to {TargetFloor} floor");
+                $"just spawned at Floor Level {SpawnFloor} and wants to go to Floor Level {TargetFloor}.");
         }
 
         public void CallElevator()

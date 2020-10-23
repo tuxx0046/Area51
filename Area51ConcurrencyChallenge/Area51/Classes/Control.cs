@@ -8,7 +8,6 @@ namespace Area51
     public class Control
     {
         private  Elevator _elevator = new Elevator();
-        private List<Elevator>
 
         public List<Floor> floors { get; set; }
 
@@ -47,7 +46,7 @@ namespace Area51
 
         public void AllowElevatorMove(IPerson person)
         {
-            _elevator.MoveToFloor(person);
+            //_elevator.MoveToFloor(person);
         }
 
         

@@ -1,22 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using System.Reflection.Metadata;
+using System.Security.Cryptography.X509Certificates;
+using Area51.Classes;
 namespace Area51
 {
     class Program
     {
-        static List<IPerson> Personnels = new List<IPerson>();
+        static Dictionary<int, Floor> floors = new Dictionary<int, Floor>();
+        static int numberOfClearanceLevels;
+
         static void Main(string[] args)
         {
-            for (int i = 1; i <= 20; i++)
-            {
-                Personnels.Add(Factory.CreatePerson(5, 4, i));
-            }
+            AddFloors();
+            numberOfClearanceLevels = floors.Count;
+            Elevator elevator = new Elevator();
 
-            Console.WriteLine("Current personnel:");
-            foreach (IPerson person in Personnels)
+            SpawnPersonOnRandomFloor(1);
+            for (int i = 0; i < floors.Count; i++)
             {
-                Console.WriteLine(person.Id + " on floor: " + person.SpawnFloor);
+                if (floors[i].CalledElevator == false && floors[i].Personnel.Count != 0)
+                {
+                    floors[i].CallElevator(elevator, floors[i].FloorName);
+                }
+            }
+            elevator.ShowElevatorQueue();
+            elevator.MoveToNextFloorInQueue();
+            elevator.ShowElevatorQueue();
+            // floors er en liste af floor og ikke string name of floor
+            
+            elevator.CarryPersonToTargetFloor();
+
+        }
+
+        public static void AddFloors()
+        {
+            floors.Add(0, Factory.CreateFloor("Ground"));
+            floors.Add(1, Factory.CreateFloor("B1"));
+            floors.Add(2, Factory.CreateFloor("B2"));
+            floors.Add(3, Factory.CreateFloor("B3"));
+        }
+
+        public static void SpawnPersonOnRandomFloor(int id)
+        {
+            Random rnd = new Random();
+            int randomFloor;
+            if (floors.Count > 0)
+            {
+                randomFloor = rnd.Next(0, floors.Count);
+                floors[randomFloor].SpawnNewPerson(numberOfClearanceLevels, floors.Count, id);
             }
         }
     }

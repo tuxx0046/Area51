@@ -10,27 +10,42 @@ namespace Area51
         private readonly IPanel _panel;
         private readonly IScanner _scanner;
         private readonly ITurret _turret;
-        private readonly string _floorName;
-        public bool CallElevator { get; set; } = false;
-        public Elevator Elevator { get; }
+        public readonly string FloorName;
+        public bool CalledElevator { get; private set; } = false;
+        public List<IPerson> Personnel = new List<IPerson>();
 
         public Floor(IPanel panel, IScanner scanner, ITurret turret, string floorName)
         {
             _panel = panel;
             _scanner = scanner;
             _turret = turret;
-            _floorName = floorName;
-            Elevator = elevator;
+            FloorName = floorName;
         }
 
         public void RelayKillOrder(IPerson person)
         {
-            _turret.EliminateTarget(person, _floorName);
+            _turret.EliminateTarget(person, FloorName);
         }
 
         public IPerson SendScanResult()
         {
             return _scanner.SendScanResult();
+        }
+
+        public void SpawnNewPerson(int numberOfClearanceLevels, int numberOfFloors, int id)
+        {
+            Personnel.Add(Factory.CreatePerson(numberOfClearanceLevels, numberOfFloors, id));
+        }
+
+        public void CallElevator(Elevator elevator, Floor floor)
+        {
+            CalledElevator = true;
+            elevator.AddCallToQueue(floor);
+        }
+
+        public void UnCallElevator()
+        {
+            CalledElevator = false;
         }
     }
 }

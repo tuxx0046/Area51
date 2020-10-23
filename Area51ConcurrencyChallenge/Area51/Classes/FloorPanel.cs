@@ -8,7 +8,7 @@ namespace Area51.Classes
     {
         public void GoToFloor(Control control, int floor)
         {
-            control.
+            //control.
         }
     }
 }
