@@ -31,16 +31,26 @@ namespace Area51.Classes
             _queue.RemoveAt(0);
         }
 
+        /// <summary>
+        /// Remove call floor panel call from elevator's queue
+        /// </summary>
         public void ArrivedToFloor()
         {
             CurrentFloor.UnCallElevator();
         }
 
+        /// <summary>
+        /// Add floor panel call to elevator's queue
+        /// </summary>
+        /// <param name="floor"></param>
         public void AddCallToQueue(Floor floor)
         {
             _queue.Add(floor);
         }
 
+        /// <summary>
+        /// Print elevator's queue to console
+        /// </summary>
         public void ShowElevatorQueue()
         {
             Console.WriteLine("Elevator queue: ");

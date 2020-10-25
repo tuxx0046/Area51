@@ -22,7 +22,7 @@ namespace Area51
             {
                 if (floors[i].CalledElevator == false && floors[i].Personnel.Count != 0)
                 {
-                    floors[i].CallElevator(elevator, floors[i].FloorName);
+                    floors[i].CallElevator(elevator);
                 }
             }
             elevator.ShowElevatorQueue();

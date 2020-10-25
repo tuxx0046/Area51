@@ -12,6 +12,7 @@ namespace Area51
         public int SpawnFloor { get; }
         public bool IsDead { get; set; } = false;
         public bool MarkedForTermination { get; set; } = false;
+        public bool HasCalledElevator { get; set; } = false;
 
         public Personnel(int clearanceLevel, int targetFloor, int spawnFloor, int staffId)
         {

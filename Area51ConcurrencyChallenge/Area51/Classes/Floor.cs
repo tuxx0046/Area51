@@ -37,10 +37,10 @@ namespace Area51
             Personnel.Add(Factory.CreatePerson(numberOfClearanceLevels, numberOfFloors, id));
         }
 
-        public void CallElevator(Elevator elevator, Floor floor)
+        public void CallElevator(Elevator elevator)
         {
             CalledElevator = true;
-            elevator.AddCallToQueue(floor);
+            elevator.AddCallToQueue(this);
         }
 
         public void UnCallElevator()
