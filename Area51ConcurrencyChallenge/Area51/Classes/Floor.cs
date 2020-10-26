@@ -35,9 +35,10 @@ namespace Area51
             return _scanner.SendScanResult();
         }
 
-        public void SpawnNewPerson(int numberOfClearanceLevels, Dictionary<int, Floor> floors, int id)
+        public void SpawnNewPerson(int numberOfClearanceLevels, Floor spawnFloor, List<Floor> floors, int id)
         {
-            Personnel.Add(Factory.CreatePerson(numberOfClearanceLevels, floors, id));
+            IPerson person = Factory.CreatePerson(numberOfClearanceLevels, spawnFloor, floors, id);
+            Personnel.Add(person);
         }
 
         public void CallElevator(Elevator elevator)

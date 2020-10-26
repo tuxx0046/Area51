@@ -7,20 +7,19 @@ namespace Area51
 {
     public static class Factory
     {
-        public static IPerson CreatePerson(int numberOfClearanceLevels, Dictionary<int, Floor> floors, int personnelId)
+        public static IPerson CreatePerson(int numberOfClearanceLevels, Floor spawnFloor, List<Floor> floors, int personnelId)
         {
             Random rnd = new Random();
             int clearanceLevel = rnd.Next(0, numberOfClearanceLevels);
-            Floor spawnFloor = floors[rnd.Next(0, floors.Count)];
-            Floor targetFloor;
+            int targetFloor;
             // Don't allow target floor to be equal to spawn floor
             do
             {
-                targetFloor = floors[rnd.Next(0, floors.Count)];
+                targetFloor = rnd.Next(0, floors.Count);
             }
-            while (targetFloor == spawnFloor);
+            while (targetFloor == spawnFloor.FloorLevel);
 
-            return new Personnel(clearanceLevel, targetFloor, spawnFloor, personnelId);
+            return new Personnel(clearanceLevel, floors[targetFloor], spawnFloor, personnelId);
         }
 
         public static Floor CreateFloor(int floorLevel, string floorName)
