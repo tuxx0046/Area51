@@ -24,11 +24,13 @@ namespace Area51.Classes
         {
             if (_queue.Count > 0)
             {
-                CurrentFloor.UnCallElevator();
+                if (CurrentFloor != null)
+                {
+                    CurrentFloor.UnCallElevator();
+                }
                 TargetFloor = _queue[0];
                 // TODO : time has to pass
                 ArrivedAtFloor();
-                Console.WriteLine("[Elevator]: Arrived at {0}", TargetFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.FloorName);
                 _queue.RemoveAt(0);
             }
             else
@@ -48,6 +50,7 @@ namespace Area51.Classes
         /// </summary>
         public void ArrivedAtFloor()
         {
+            Console.WriteLine("[Elevator]: Arrived at {0}", TargetFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.FloorName);
             CurrentFloor = TargetFloor;
             ExitPersonInElevator();
             TargetFloor = null;
@@ -76,12 +79,21 @@ namespace Area51.Classes
         /// </summary>
         public void ShowElevatorQueue()
         {
+            if (_queue.Count != 0)
+            {
+
             Console.WriteLine("[Elevator]: Queue count: " + _queue.Count);
             Console.WriteLine("[Elevator]: queue: ");
             for (int i = 0; i < _queue.Count; i++)
             {
                 Console.WriteLine("[Elevator]: Number {0} in queue: {1}", i + 1, _queue[i].FloorName == "Ground" ? "Ground Floor" : "Floor " + _queue[i].FloorName);
             }
+            }
+            else
+            {
+                Console.WriteLine("[Elevator]: none in queue");
+            }
+
         }
     }
 }

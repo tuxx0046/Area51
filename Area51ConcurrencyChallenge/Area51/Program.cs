@@ -20,7 +20,7 @@ namespace Area51
             Control control = new Control(elevator);
 
             SpawnPersonOnRandomFloor(1);
-            SpawnPersonOnRandomFloor(2);
+            //SpawnPersonOnRandomFloor(2);
 
             // Check all floors for new spawns and let them call elevator
 
@@ -33,7 +33,6 @@ namespace Area51
                     IPerson person = floors[i].Personnel[0];
                     person.CallElevator(elevator);
                     floors[i]._scanner.ScanPerson(person);
-                    control.Retrieve
                 }
             }
 

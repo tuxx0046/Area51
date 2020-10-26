@@ -22,14 +22,15 @@ namespace Area51
             SpawnFloor = spawnFloor;
             Id = "Staff" + staffId.ToString();
             Console.WriteLine($"[Personnel]: {Id} with clearance level {SecurityCertificate} " +
-                $"just spawned on {SpawnFloor.FloorName} and wants to go to {TargetFloor.FloorName}.");
+                $"just spawned on {(SpawnFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + SpawnFloor.FloorName)} " +
+                $"and wants to go to {(TargetFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.FloorName)}.");
         }
 
         public void CallElevator(Elevator elevator)
         {
             if (HasCalledElevator == false)
             {
-                Console.WriteLine("[Personnel]: " + Id + " has pushed floor panel for elevator");
+                Console.WriteLine("[Personnel]: " + Id + " has pressed button and called elevator to " + SpawnFloor.FloorName);
                 SpawnFloor.CallElevator(elevator);
                 HasCalledElevator = true;
             }
