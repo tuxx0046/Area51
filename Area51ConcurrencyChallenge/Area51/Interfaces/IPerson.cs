@@ -1,16 +1,17 @@
-﻿namespace Area51
+﻿using Area51.Classes;
+
+namespace Area51
 {
     public interface IPerson
     {
         string Id { get; }
         int SecurityCertificate { get; }
-        int SpawnFloor { get; }
-        int TargetFloor { get; }
+        Floor SpawnFloor { get; }
+        Floor TargetFloor { get; }
         bool IsDead { get; set; }
         bool MarkedForTermination { get; set; }
 
-
+        void CallElevator(Elevator elevator);
         void Die();
-        void GoToAdministration();
     }
 }

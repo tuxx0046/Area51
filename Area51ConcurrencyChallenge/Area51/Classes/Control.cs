@@ -31,10 +31,10 @@ namespace Area51
             {
                 Console.WriteLine($"{person.Id} has clearance level {person.SecurityCertificate} and is an intruder. Elevator floor panel disabled");
                 person.MarkedForTermination = true;
-                floors[person.SpawnFloor].RelayKillOrder(person);
+                person.SpawnFloor.RelayKillOrder(person);
                 return false;
             }
-            else if (person.SecurityCertificate > person.TargetFloor)
+            else if (person.SecurityCertificate > person.TargetFloor.FloorLevel)
             {
                 Console.WriteLine($"{person.Id} does not have security clearance to floor {person.TargetFloor}.");
                 // TODO: remove personnel with not clearance

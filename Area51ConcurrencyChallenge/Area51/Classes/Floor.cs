@@ -1,6 +1,7 @@
 ﻿using Area51.Classes;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace Area51
@@ -13,12 +14,14 @@ namespace Area51
         public readonly string FloorName;
         public bool CalledElevator { get; private set; } = false;
         public List<IPerson> Personnel = new List<IPerson>();
+        public int FloorLevel { get; }
 
-        public Floor(IPanel panel, IScanner scanner, ITurret turret, string floorName)
+        public Floor(IPanel panel, IScanner scanner, ITurret turret, int floorLevel, string floorName)
         {
             _panel = panel;
             _scanner = scanner;
             _turret = turret;
+            FloorLevel = floorLevel;
             FloorName = floorName;
         }
 
@@ -32,15 +35,23 @@ namespace Area51
             return _scanner.SendScanResult();
         }
 
-        public void SpawnNewPerson(int numberOfClearanceLevels, int numberOfFloors, int id)
+        public void SpawnNewPerson(int numberOfClearanceLevels, Dictionary<int, Floor> floors, int id)
         {
-            Personnel.Add(Factory.CreatePerson(numberOfClearanceLevels, numberOfFloors, id));
+            Personnel.Add(Factory.CreatePerson(numberOfClearanceLevels, floors, id));
         }
 
         public void CallElevator(Elevator elevator)
         {
-            CalledElevator = true;
-            elevator.AddCallToQueue(this);
+            if (CalledElevator == false)
+            {
+                Console.WriteLine("[Floor]: " + FloorName + " has called Elevator");
+                CalledElevator = true;
+                elevator.AddCallToQueue(this);
+            }
+            else
+            {
+                Console.WriteLine("[Floor]: " + FloorName + " has already called elevator");
+            }
         }
 
         public void UnCallElevator()
