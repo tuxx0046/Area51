@@ -7,8 +7,8 @@ namespace Area51
 {
     public class Control
     {
-        private  Elevator _elevator = new Elevator();
-
+        private Elevator _elevator;
+        public FloorPanel floorPanel = new FloorPanel();
         public List<Floor> floors { get; set; }
 
         public void InputFloor(Floor floor)
@@ -16,39 +16,33 @@ namespace Area51
             floors.Add(floor);
         }
 
-        public void HandleElevatorRequest(IPerson person)
+        public Control(Elevator elevator)
         {
-            bool acceptElevatorMoveRequest = CheckCertificate(person);
-            if (acceptElevatorMoveRequest)
-            {
-                AllowElevatorMove(person);
-            }
+            _elevator = elevator;
         }
 
-        public bool CheckCertificate(IPerson person)
+        public void RetrieveScanResult(Floor floor)
+        {
+            IPerson person = floor._scanner.SendScanResult();
+            CheckCertificate(person);
+        }
+
+        public void CheckCertificate(IPerson person)
         {
             if (person.SecurityCertificate == 0)
             {
-                Console.WriteLine($"{person.Id} has clearance level {person.SecurityCertificate} and is an intruder. Elevator floor panel disabled");
+                // Intruder
+                Console.WriteLine($"[Control]: {person.Id} has clearance level {person.SecurityCertificate} and is an intruder.");
                 person.MarkedForTermination = true;
+                Console.WriteLine("[Control]: Giving kill order to turret. Target is {0}", person.Id);
                 person.SpawnFloor.RelayKillOrder(person);
-                return false;
+                // TODO: move elevator to next in queue
             }
-            else if (person.SecurityCertificate > person.TargetFloor.FloorLevel)
+            else 
             {
-                Console.WriteLine($"{person.Id} does not have security clearance to floor {person.TargetFloor}.");
-                // TODO: remove personnel with not clearance
-                return false;
+                // Staff
+                floorPanel.HandleRequest(_elevator, person);
             }
-            // Cleared
-            return true;
         }
-
-        public void AllowElevatorMove(IPerson person)
-        {
-            //_elevator.MoveToFloor(person);
-        }
-
-        
     }
 }

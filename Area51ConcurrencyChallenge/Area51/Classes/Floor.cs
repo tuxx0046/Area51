@@ -9,8 +9,8 @@ namespace Area51
     public class Floor
     {
         private readonly IPanel _panel;
-        private readonly IScanner _scanner;
-        private readonly ITurret _turret;
+        public readonly IScanner _scanner;
+        public readonly ITurret _turret;
         public readonly string FloorName;
         public bool CalledElevator { get; private set; } = false;
         public List<IPerson> Personnel = new List<IPerson>();

@@ -18,6 +18,10 @@ namespace Area51
             _scanResult = person;
         }
 
+        /// <summary>
+        /// Returns IPerson scan result
+        /// </summary>
+        /// <returns></returns>
         public IPerson SendScanResult()
         {
             if (_scanResult != null)

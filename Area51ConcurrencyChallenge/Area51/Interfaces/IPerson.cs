@@ -11,6 +11,7 @@ namespace Area51
         bool IsDead { get; set; }
         bool MarkedForTermination { get; set; }
 
+        void EnterElevator(Elevator elevator);
         void CallElevator(Elevator elevator);
         void Die();
     }

@@ -40,6 +40,11 @@ namespace Area51
             
         }
 
+        public void EnterElevator(Elevator elevator)
+        {
+            elevator.personInElevator = this;
+        }
+
         public void Die()
         {
             Console.WriteLine($"[Personnel]: The intruder {Id} has died");
