@@ -17,25 +17,37 @@ namespace Area51
             AddFloors();
             numberOfClearanceLevels = floors.Count;
             Elevator elevator = new Elevator();
-            Control control = new Control(elevator);
+            Control control = new Control(elevator, floors[0]);
 
             //SpawnPersonOnRandomFloor(1);
             //SpawnPersonOnRandomFloor(2);
 
-            // Create intruder on floor 0
-            //Personnel intruder = new Personnel(0, floors[3], floors[0], 0);
-            //floors[0].Personnel.Add(intruder);
+            // Create personnel with clearance
+            //Personnel pPerson = new Personnel(numberOfClearanceLevels, floors[3], floors[0], 0);
+            //floors[0].Personnel.Add(person);
 
-            // Create personnel with insufficient clearance
-            Personnel notClearedPerson = new Personnel(1, floors[3], floors[0], 0);
-            floors[0].Personnel.Add(notClearedPerson);
+            // Create personnel with insufficient clearance to target floor, and spawned floor is default floor
+            //Personnel person = new Personnel(1, floors[3], floors[0], 0);
+            //floors[0].Personnel.Add(person);
+
+            // Create personnel with insufficient clearance to target floor, and spawned floor is not default floor
+            //Personnel person = new Personnel(2, floors[3], floors[1], 0);
+            //floors[1].Personnel.Add(person);
+
+            // Create personnel with insufficient clearance to spawned floor
+            //Personnel person = new Personnel(1, floors[3], floors[2], 0);
+            //floors[2].Personnel.Add(person);
+
+            // Create intruder on floor 0
+            Personnel spawnedPerson = new Personnel(0, floors[3], floors[0], 0);
+            floors[0].Personnel.Add(spawnedPerson);
 
             // Check all floors for new spawn and let it call elevator
             for (int i = 0; i < floors.Count; i++)
             {
                 // A floor can only call elevator once (pushing call button multiple times won't stack in queue)
                 // Only if there's a person on the floor the person can push the floor's call button
-                // TODO: Maybe the one floor one call rule should be removed and add a called field to personnel instead?
+                // TODO: Maybe the one floor one call rule should be removed and add a called field to personnel instead?  If so scanner has to be reworked
                 if (floors[i].CalledElevator == false && floors[i].Personnel.Count != 0)
                 {
                     // First person in line gets to call elevator
@@ -46,19 +58,24 @@ namespace Area51
             }
 
             elevator.ShowElevatorQueue();
-            Floor currentFloorOfElevator = elevator.MoveToNextFloorInQueue();
-            if (currentFloorOfElevator.Personnel[0] == notClearedPerson)
+            // Elevator moves
+            Floor currentFloorOfElevator = control.MoveElevator();
+            // Person enters
+            if (currentFloorOfElevator.Personnel[0] == spawnedPerson)
             {
-                if (notClearedPerson.HasCalledElevator)
+                if (spawnedPerson.HasCalledElevator)
                 {
-                    if (notClearedPerson.SpawnFloor == elevator.CurrentFloor)
+                    if (spawnedPerson.SpawnFloor == elevator.CurrentFloor)
                     {
-                        notClearedPerson.EnterElevator(elevator);
+                        spawnedPerson.EnterElevator(elevator);
                     }
                 }
             }
-            // When arrived to floor let control decide what to do
+            // control checks clearance level of person in elevator
             control.RetrieveScanResult(currentFloorOfElevator);
+
+
+            // When arrived to floor let control decide what to do
 
             // Check to see if there's any person left
             for (int i = 0; i < floors.Count; i++)

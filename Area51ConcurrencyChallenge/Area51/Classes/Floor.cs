@@ -35,9 +35,8 @@ namespace Area51
             // Check to make sure that calling person matches floor's personnel before acting
             if (person == Personnel[0])
             {
-                Console.WriteLine($"[Floor]: Relaying target({person.Id}) to turret...");
+                Console.WriteLine($"[Floor]: {FloorName} is relaying target({person.Id}) to turret...");
                 _turret.EliminateTarget(person, FloorName);
-                Personnel.Remove(person);
             }
             // This should never happen!
             else
@@ -74,6 +73,15 @@ namespace Area51
         public void UnCallElevator()
         {
             CalledElevator = false;
+        }
+
+        public void RemovePersonFromFloor(IPerson person)
+        {
+            if (person == Personnel[0])
+            {
+                Personnel.Remove(person);
+                Console.WriteLine($"[Floor]: {person.Id} is no longer on {(FloorName == "Ground" ? FloorName + " Floor" : "Floor " + FloorName)}.");
+            }
         }
     }
 }

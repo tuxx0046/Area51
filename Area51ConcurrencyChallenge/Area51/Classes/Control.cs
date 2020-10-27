@@ -7,18 +7,21 @@ namespace Area51
 {
     public class Control
     {
-        private Elevator _elevator;
+        private readonly Elevator _elevator;
+        private readonly Floor _defaultFloor;
+        private Floor elevatorsCurrentFloor;
         public FloorPanel floorPanel = new FloorPanel();
-        public List<Floor> floors { get; set; }
 
-        public void InputFloor(Floor floor)
-        {
-            floors.Add(floor);
-        }
-
-        public Control(Elevator elevator)
+        public Control(Elevator elevator, Floor defaultFloor)
         {
             _elevator = elevator;
+            _defaultFloor = defaultFloor;
+        }
+
+        public Floor MoveElevator()
+        {
+            elevatorsCurrentFloor = _elevator.MoveToNextFloorInQueue();
+            return elevatorsCurrentFloor;
         }
 
         /// <summary>
@@ -41,35 +44,59 @@ namespace Area51
                 person.MarkedForTermination = true;
                 Console.WriteLine("[Control]: Giving kill order to turret. Target is {0}", person.Id);
                 person.SpawnFloor.RelayKillOrder(person);
+                // Wait for kill confirm, because if person is in elevator it can't just go to next floor
+                bool killConfirmed = person.SpawnFloor._turret.ConfirmKill(person);
+                if (killConfirmed)
+                {
+                    person.SpawnFloor.RemovePersonFromFloor(person);
+                }
                 // TODO: move elevator to next in queue
             }
             else
             {
                 // Staff
+                Console.WriteLine($"[Control]: {person.Id} is a verified staff member of AREA 51.");
                 bool requestAccepted = floorPanel.HandleRequest(_elevator, person);
                 // If request not accepted
                 if (requestAccepted == false)
                 {
-                    RerouteNonClearedPersonnel(person);
+                    RedirectNonClearedPersonnel(person);
                 }
+
+                elevatorsCurrentFloor = _elevator.MoveToNextFloorInQueue();
             }
         }
 
-        private void RerouteNonClearedPersonnel(IPerson person)
+        /// <summary>
+        /// Redirect personnel with clearance problems
+        /// </summary>
+        /// <param name="person"></param>
+        private void RedirectNonClearedPersonnel(IPerson person)
         {
             // Spawned on floor with no clearance - reroute to removal
             if (person.SecurityCertificate < person.SpawnFloor.FloorLevel)
             {
-                Console.WriteLine($"[Control]: No security clearance to requested floor. Security called to escort {person.Id} to tortu... interrogation facility.");
-                _elevator.CurrentFloor.Personnel.Remove(person);
-                person.Die();
+                Console.WriteLine($"[Control]: No security clearance to current floor. Security called to escort {person.Id} to tortu... interrogation facility.");
+                _elevator.ExitPersonInElevator();
+                _elevator.CurrentFloor.RemovePersonFromFloor(person);
             }
             // Wants access to floor without clearance - reroute to upper most floor
             else
             {
-
+                // Don't move elevator if spawnfloor is default floor
+                if (person.SpawnFloor == _defaultFloor)
+                {
+                    Console.WriteLine($"[Control]: {person.Id} has no clearance to requested floor. Elevator won't move until {person.Id} leaves elevator");
+                    _elevator.ExitPersonInElevator();
+                    person.SpawnFloor.RemovePersonFromFloor(person);
+                }
+                // Spawnfloor is different from default floor
+                else
+                {
+                    Console.WriteLine($"[Control]: No security clearance to requested floor. Sending elevator to default floor. {person.Id} is advised to contact the administration's office.");
+                    _elevator.AddToFirstInQueue(_defaultFloor);
+                }
             }
-                
         }
     }
 }

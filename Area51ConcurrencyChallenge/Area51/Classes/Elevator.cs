@@ -13,7 +13,7 @@ namespace Area51.Classes
         public Floor TargetFloor { get; set; } = null;
         private List<Floor> _queue = new List<Floor>();
 
-        public void CarryPersonToTargetFloor(IPerson person)
+        public void CarryPerson(IPerson person)
         {
             TargetFloor = person.TargetFloor;
             // TODO: after some time passes reset elevator target floor
@@ -26,17 +26,25 @@ namespace Area51.Classes
         /// <returns>Floor that the elevator moved to (the next in queue)</returns>
         public Floor MoveToNextFloorInQueue()
         {
+            // Remove person from spawned floor if carrying person to new floor
+            if (personInElevator != null)
+            {
+                personInElevator.SpawnFloor.RemovePersonFromFloor(personInElevator);
+            }
+            // Make sure that Floor queue is not empty
             if (_queue.Count > 0)
             {
+                // TODO: Rethink if floor calls can stack or not. For now, only one call per floor, no queuing
                 if (CurrentFloor != null)
                 {
                     CurrentFloor.UnCallElevator();
                 }
+                // Set target floor to the first in queue
                 TargetFloor = _queue[0];
-                Console.WriteLine("[Elevator]: elevator is moving to " + TargetFloor.FloorName + "...");
+                Console.WriteLine("[Elevator]: Elevator is moving to " + TargetFloor.FloorName + "...");
                 // TODO : time has to pass
+
                 ArrivedAtFloor();
-                _queue.RemoveAt(0);
                 return CurrentFloor;
             }
             else
@@ -51,24 +59,28 @@ namespace Area51.Classes
         /// </summary>
         public void ExitPersonInElevator()
         {
-            Console.WriteLine("[Elevator]: " + personInElevator.Id + " has exited elevator and reached target floor");
+            Console.WriteLine("[Elevator]: " + personInElevator.Id + " has exited elevator");
             // TODO: personInElevator garbage collect
             personInElevator = null;
         }
 
         /// <summary>
-        /// Remove call floor panel call from elevator's queue
+        /// Remove floor's call from elevator's queue
         /// </summary>
         public void ArrivedAtFloor()
         {
             Console.WriteLine("[Elevator]: Arrived at {0}", TargetFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.FloorName);
+            // New current floor
             CurrentFloor = TargetFloor;
-            
+            //Remove current floor from queue
+            _queue.RemoveAt(0);
+
+            // Remove person from elevator if any
             if (personInElevator != null)
             {
                 ExitPersonInElevator();
             }
-            
+            // Reset target floor
             TargetFloor = null;
         }
 
@@ -85,7 +97,7 @@ namespace Area51.Classes
         public void AddToFirstInQueue(Floor floor)
         {
             _queue.Insert(0, floor);
-            Console.WriteLine("[Elevator]: " + floor.FloorName + " added to first in queue");
+            Console.WriteLine("[Elevator]: " + floor.FloorName + " added to top of queue");
 
         }
 

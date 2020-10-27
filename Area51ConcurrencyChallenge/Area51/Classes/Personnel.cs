@@ -44,6 +44,12 @@ namespace Area51
         public void EnterElevator(Elevator elevator)
         {
             elevator.personInElevator = this;
+            Console.WriteLine($"[Personnel]: {Id} has entered elevator");
+        }
+
+        public void LeaveFloor()
+        {
+            SpawnFloor.RemovePersonFromFloor(this);
         }
 
         /// <summary>

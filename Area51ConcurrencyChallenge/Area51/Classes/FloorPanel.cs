@@ -17,7 +17,7 @@ namespace Area51.Classes
             bool clearForAccess = VerifyAccessLevel(person);
             if (clearForAccess)
             {
-                person.EnterElevator(elevator);
+                Console.WriteLine($"[Floor Panel]: {person.Id} is cleared for access to requested floor.");
                 InputFloorRequestToElevator(elevator, person.TargetFloor);
                 return true;
             }
@@ -35,6 +35,7 @@ namespace Area51.Classes
         /// <returns></returns>
         public bool VerifyAccessLevel(IPerson person)
         {
+            Console.WriteLine($"[Floor Panel]: Checking clearance level...");
             if (person.SecurityCertificate < person.TargetFloor.FloorLevel)
             {
                 return false;
@@ -49,10 +50,8 @@ namespace Area51.Classes
         /// <param name="floor"></param>
         public void InputFloorRequestToElevator(Elevator elevator, Floor floor)
         {
+            Console.WriteLine("[Floor Panel]: Add request to top of elevator queue...");
             elevator.AddToFirstInQueue(floor);
-            Console.WriteLine("[Floor Panel]: Added request to top of elevator queue...");
         }
-
-
     }
 }
