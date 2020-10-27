@@ -25,9 +25,25 @@ namespace Area51
             FloorName = floorName;
         }
 
+        /// <summary>
+        /// Sends kill order to turret.
+        /// <br>Removes person from Personnel list because it's an intruder!</br>
+        /// </summary>
+        /// <param name="person"></param>
         public void RelayKillOrder(IPerson person)
         {
-            _turret.EliminateTarget(person, FloorName);
+            // Check to make sure that calling person matches floor's personnel before acting
+            if (person == Personnel[0])
+            {
+                Console.WriteLine($"[Floor]: Relaying target({person.Id}) to turret...");
+                _turret.EliminateTarget(person, FloorName);
+                Personnel.Remove(person);
+            }
+            // This should never happen!
+            else
+            {
+                Console.WriteLine("[Floor]: Target " + person.Id + " is no longer on " + this.FloorName + "!");
+            }
         }
 
         public IPerson SendScanResult()

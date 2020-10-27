@@ -21,6 +21,11 @@ namespace Area51
             _elevator = elevator;
         }
 
+        /// <summary>
+        /// Get scan results from floor scanner and checks security certificate of the person who called the elevator.
+        /// <br>Depending on check, control will send commands to turret or elevator.</br>
+        /// </summary>
+        /// <param name="floor">Should be the floor that elevator was called to</param>
         public void RetrieveScanResult(Floor floor)
         {
             IPerson person = floor._scanner.SendScanResult();
@@ -38,11 +43,33 @@ namespace Area51
                 person.SpawnFloor.RelayKillOrder(person);
                 // TODO: move elevator to next in queue
             }
-            else 
+            else
             {
                 // Staff
-                floorPanel.HandleRequest(_elevator, person);
+                bool requestAccepted = floorPanel.HandleRequest(_elevator, person);
+                // If request not accepted
+                if (requestAccepted == false)
+                {
+                    RerouteNonClearedPersonnel(person);
+                }
             }
+        }
+
+        private void RerouteNonClearedPersonnel(IPerson person)
+        {
+            // Spawned on floor with no clearance - reroute to removal
+            if (person.SecurityCertificate < person.SpawnFloor.FloorLevel)
+            {
+                Console.WriteLine($"[Control]: No security clearance to requested floor. Security called to escort {person.Id} to tortu... interrogation facility.");
+                _elevator.CurrentFloor.Personnel.Remove(person);
+                person.Die();
+            }
+            // Wants access to floor without clearance - reroute to upper most floor
+            else
+            {
+
+            }
+                
         }
     }
 }

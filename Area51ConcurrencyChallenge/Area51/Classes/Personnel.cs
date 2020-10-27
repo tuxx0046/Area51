@@ -20,7 +20,7 @@ namespace Area51
             SecurityCertificate = clearanceLevel;
             TargetFloor = targetFloor;
             SpawnFloor = spawnFloor;
-            Id = "Staff" + staffId.ToString();
+            Id = clearanceLevel > 0 ? "Staff" + staffId.ToString() : "Staff" + staffId.ToString() + "(intruder)";
             Console.WriteLine($"[Personnel]: {Id} with clearance level {SecurityCertificate} " +
                 $"just spawned on {(SpawnFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + SpawnFloor.FloorName)} " +
                 $"and wants to go to {(TargetFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.FloorName)}.");
@@ -46,6 +46,10 @@ namespace Area51
             elevator.personInElevator = this;
         }
 
+        /// <summary>
+        /// Removes person from spawned floor Personnel list.
+        /// <br>Dies and cleans itself up</br>
+        /// </summary>
         public void Die()
         {
             Console.WriteLine($"[Personnel]: The intruder {Id} has died");

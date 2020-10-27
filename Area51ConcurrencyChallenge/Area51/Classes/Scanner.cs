@@ -10,11 +10,7 @@ namespace Area51
         private IPerson _scanResult;
         public void ScanPerson(IPerson person)
         {
-            if (person.SecurityCertificate == 0)
-            {
-                person.MarkedForTermination = true;
-            }
-
+            Console.WriteLine("[scanner]: " + person.SpawnFloor.FloorName + " scanner is scanning " + person.Id + "...");
             _scanResult = person;
         }
 
@@ -26,9 +22,10 @@ namespace Area51
         {
             if (_scanResult != null)
             {
+                Console.WriteLine("[Scanner]: sending scan result from " + _scanResult.Id + " on " + _scanResult.SpawnFloor.FloorName);
                 return _scanResult;
             }
-
+            Console.WriteLine("[Scanner]: No scan result is found!");
             return null;
         }
     }

@@ -8,23 +8,23 @@ namespace Area51.Classes
     {
         /// <summary>
         /// Check if person can go to target floor and if not handles it
+        /// <br>by sending person to must upper floor</br>
         /// </summary>
         /// <param name="elevator"></param>
         /// <param name="person"></param>
-        public void HandleRequest(Elevator elevator, IPerson person)
+        public bool HandleRequest(Elevator elevator, IPerson person)
         {
             bool clearForAccess = VerifyAccessLevel(person);
-            
             if (clearForAccess)
             {
                 person.EnterElevator(elevator);
                 InputFloorRequestToElevator(elevator, person.TargetFloor);
+                return true;
             }
             else
             {
-                // TODO: Remove person completely or something due to no access clearance
-                Console.WriteLine($"[Floor Panel]: {person.Id} does not have security clearance to floor {person.TargetFloor}.");
-                elevator.MoveToNextFloorInQueue();
+                Console.WriteLine($"[Floor Panel]: {person.Id} does not have security clearance to {person.TargetFloor.FloorName}. Request not accepted.");
+                return false;
             }
         }
 
@@ -50,7 +50,9 @@ namespace Area51.Classes
         public void InputFloorRequestToElevator(Elevator elevator, Floor floor)
         {
             elevator.AddToFirstInQueue(floor);
-            Console.WriteLine("[Floor Panel]: Added request in top of elevator queue...");
+            Console.WriteLine("[Floor Panel]: Added request to top of elevator queue...");
         }
+
+
     }
 }

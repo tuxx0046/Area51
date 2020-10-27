@@ -19,14 +19,23 @@ namespace Area51
             Elevator elevator = new Elevator();
             Control control = new Control(elevator);
 
-            SpawnPersonOnRandomFloor(1);
+            //SpawnPersonOnRandomFloor(1);
             //SpawnPersonOnRandomFloor(2);
 
-            // Check all floors for new spawns and let them call elevator
+            // Create intruder on floor 0
+            //Personnel intruder = new Personnel(0, floors[3], floors[0], 0);
+            //floors[0].Personnel.Add(intruder);
 
+            // Create personnel with insufficient clearance
+            Personnel notClearedPerson = new Personnel(1, floors[3], floors[0], 0);
+            floors[0].Personnel.Add(notClearedPerson);
+
+            // Check all floors for new spawn and let it call elevator
             for (int i = 0; i < floors.Count; i++)
             {
-                Console.WriteLine(floors[i].Personnel.Count); 
+                // A floor can only call elevator once (pushing call button multiple times won't stack in queue)
+                // Only if there's a person on the floor the person can push the floor's call button
+                // TODO: Maybe the one floor one call rule should be removed and add a called field to personnel instead?
                 if (floors[i].CalledElevator == false && floors[i].Personnel.Count != 0)
                 {
                     // First person in line gets to call elevator
@@ -36,16 +45,35 @@ namespace Area51
                 }
             }
 
-            
-
             elevator.ShowElevatorQueue();
-            elevator.MoveToNextFloorInQueue();
-            elevator.ShowElevatorQueue();
-            // floors er en liste af floor og ikke string name of floor
+            Floor currentFloorOfElevator = elevator.MoveToNextFloorInQueue();
+            if (currentFloorOfElevator.Personnel[0] == notClearedPerson)
+            {
+                if (notClearedPerson.HasCalledElevator)
+                {
+                    if (notClearedPerson.SpawnFloor == elevator.CurrentFloor)
+                    {
+                        notClearedPerson.EnterElevator(elevator);
+                    }
+                }
+            }
+            // When arrived to floor let control decide what to do
+            control.RetrieveScanResult(currentFloorOfElevator);
 
-            //elevator.CarryPersonToTargetFloor();
-
-
+            // Check to see if there's any person left
+            for (int i = 0; i < floors.Count; i++)
+            {
+                // A floor can only call elevator once (pushing call button multiple times won't stack in queue)
+                // Only if there's a person on the floor the person can push the floor's call button
+                if (floors[i].Personnel.Count != 0)
+                {
+                    Console.WriteLine(floors[i].Personnel[0].Id);
+                }
+                else
+                {
+                    Console.WriteLine($"[{floors[i].FloorName}]: No one on floor");
+                }
+            }
         }
 
         public static void AddFloors()

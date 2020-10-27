@@ -20,7 +20,11 @@ namespace Area51.Classes
             // TODO: person has reached goal - remove person completely
         }
 
-        public void MoveToNextFloorInQueue()
+        /// <summary>
+        /// Goes to next floor in queue.
+        /// </summary>
+        /// <returns>Floor that the elevator moved to (the next in queue)</returns>
+        public Floor MoveToNextFloorInQueue()
         {
             if (_queue.Count > 0)
             {
@@ -29,18 +33,25 @@ namespace Area51.Classes
                     CurrentFloor.UnCallElevator();
                 }
                 TargetFloor = _queue[0];
+                Console.WriteLine("[Elevator]: elevator is moving to " + TargetFloor.FloorName + "...");
                 // TODO : time has to pass
                 ArrivedAtFloor();
                 _queue.RemoveAt(0);
+                return CurrentFloor;
             }
             else
             {
                 Console.WriteLine("[Elevator]: No floors in queue");
+                return null;
             }
         }
 
+        /// <summary>
+        /// Remove person in elevator
+        /// </summary>
         public void ExitPersonInElevator()
         {
+            Console.WriteLine("[Elevator]: " + personInElevator.Id + " has exited elevator and reached target floor");
             // TODO: personInElevator garbage collect
             personInElevator = null;
         }
@@ -52,7 +63,12 @@ namespace Area51.Classes
         {
             Console.WriteLine("[Elevator]: Arrived at {0}", TargetFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.FloorName);
             CurrentFloor = TargetFloor;
-            ExitPersonInElevator();
+            
+            if (personInElevator != null)
+            {
+                ExitPersonInElevator();
+            }
+            
             TargetFloor = null;
         }
 
@@ -82,16 +98,15 @@ namespace Area51.Classes
             if (_queue.Count != 0)
             {
 
-            Console.WriteLine("[Elevator]: Queue count: " + _queue.Count);
-            Console.WriteLine("[Elevator]: queue: ");
-            for (int i = 0; i < _queue.Count; i++)
-            {
-                Console.WriteLine("[Elevator]: Number {0} in queue: {1}", i + 1, _queue[i].FloorName == "Ground" ? "Ground Floor" : "Floor " + _queue[i].FloorName);
-            }
+                Console.WriteLine("[Elevator]: Queue count: " + _queue.Count);
+                for (int i = 0; i < _queue.Count; i++)
+                {
+                    Console.WriteLine("[Elevator]: Number {0} in queue: {1}", i + 1, _queue[i].FloorName == "Ground" ? "Ground Floor" : "Floor " + _queue[i].FloorName);
+                }
             }
             else
             {
-                Console.WriteLine("[Elevator]: none in queue");
+                Console.WriteLine("[Elevator]: No floors calls in queue");
             }
 
         }
