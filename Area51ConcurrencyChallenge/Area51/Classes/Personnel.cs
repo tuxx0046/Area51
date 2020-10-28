@@ -22,15 +22,15 @@ namespace Area51
             SpawnFloor = spawnFloor;
             Id = clearanceLevel > 0 ? "Staff" + staffId.ToString() : "Staff" + staffId.ToString() + "(intruder)";
             Console.WriteLine($"[Personnel]: {Id} with clearance level {SecurityCertificate} " +
-                $"just spawned on {(SpawnFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + SpawnFloor.FloorName)} " +
-                $"and wants to go to {(TargetFloor.FloorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.FloorName)}.");
+                $"just spawned on {(SpawnFloor.floorName == "Ground" ? "Ground Floor" : "Floor " + SpawnFloor.floorName)} " +
+                $"and wants to go to {(TargetFloor.floorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.floorName)}.");
         }
 
         public void CallElevator(Elevator elevator)
         {
             if (HasCalledElevator == false)
             {
-                Console.WriteLine("[Personnel]: " + Id + " has pressed button and called elevator to " + SpawnFloor.FloorName);
+                Console.WriteLine("[Personnel]: " + Id + " has pressed button and called elevator to " + SpawnFloor.floorName);
                 SpawnFloor.CallElevator(elevator);
                 HasCalledElevator = true;
             }
@@ -53,8 +53,7 @@ namespace Area51
         }
 
         /// <summary>
-        /// Removes person from spawned floor Personnel list.
-        /// <br>Dies and cleans itself up</br>
+        /// Sets IPerson IsDead status to true. Used for killconfirm.
         /// </summary>
         public void Die()
         {

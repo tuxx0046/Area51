@@ -7,8 +7,9 @@ namespace Area51.Classes
     public class FloorPanel
     {
         /// <summary>
-        /// Check if person can go to target floor and if not handles it
-        /// <br>by sending person to must upper floor</br>
+        /// Handles if person can go to target floor.
+        /// <br>Returns true if IPerson has sufficient access clearance.</br>
+        /// <br>Returns false if IPerson has insufficient access.</br>
         /// </summary>
         /// <param name="elevator"></param>
         /// <param name="person"></param>
@@ -23,7 +24,7 @@ namespace Area51.Classes
             }
             else
             {
-                Console.WriteLine($"[Floor Panel]: {person.Id} does not have security clearance to {person.TargetFloor.FloorName}. Request not accepted.");
+                Console.WriteLine($"[Floor Panel]: {person.Id} does not have security clearance to {person.TargetFloor.floorName}. Request not accepted.");
                 return false;
             }
         }
@@ -33,10 +34,10 @@ namespace Area51.Classes
         /// </summary>
         /// <param name="person"></param>
         /// <returns></returns>
-        public bool VerifyAccessLevel(IPerson person)
+        private bool VerifyAccessLevel(IPerson person)
         {
             Console.WriteLine($"[Floor Panel]: Checking clearance level...");
-            if (person.SecurityCertificate < person.TargetFloor.FloorLevel)
+            if (person.SecurityCertificate < person.TargetFloor.SecurityLevel)
             {
                 return false;
             }
@@ -48,10 +49,10 @@ namespace Area51.Classes
         /// </summary>
         /// <param name="elevator"></param>
         /// <param name="floor"></param>
-        public void InputFloorRequestToElevator(Elevator elevator, Floor floor)
+        private void InputFloorRequestToElevator(Elevator elevator, Floor floor)
         {
             Console.WriteLine("[Floor Panel]: Add request to top of elevator queue...");
-            elevator.AddToFirstInQueue(floor);
+            elevator.AddFloorToTopOfQueue(floor);
         }
     }
 }

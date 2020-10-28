@@ -10,6 +10,7 @@ namespace Area51
         Floor TargetFloor { get; }
         bool IsDead { get; set; }
         bool MarkedForTermination { get; set; }
+        bool HasCalledElevator { get; set; }
 
         void EnterElevator(Elevator elevator);
         void CallElevator(Elevator elevator);

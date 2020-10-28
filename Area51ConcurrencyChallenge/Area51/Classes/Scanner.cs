@@ -10,7 +10,7 @@ namespace Area51
         private IPerson _scanResult;
         public void ScanPerson(IPerson person)
         {
-            Console.WriteLine("[Scanner]: " + person.SpawnFloor.FloorName + " scanner is scanning " + person.Id + "...");
+            Console.WriteLine("[Scanner]: " + person.SpawnFloor.floorName + " scanner is scanning " + person.Id + "...");
             _scanResult = person;
         }
 

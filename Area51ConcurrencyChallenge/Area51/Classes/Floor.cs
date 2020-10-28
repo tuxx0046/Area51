@@ -8,21 +8,19 @@ namespace Area51
 {
     public class Floor
     {
-        private readonly IPanel _panel;
-        public readonly IScanner _scanner;
-        public readonly ITurret _turret;
-        public readonly string FloorName;
+        public readonly IScanner scanner;
+        public readonly ITurret turret;
+        public readonly string floorName;
         public bool CalledElevator { get; private set; } = false;
         public List<IPerson> Personnel = new List<IPerson>();
-        public int FloorLevel { get; }
+        public int SecurityLevel { get; }
 
-        public Floor(IPanel panel, IScanner scanner, ITurret turret, int floorLevel, string floorName)
+        public Floor(IScanner scanner, ITurret turret, int floorLevel, string floorName)
         {
-            _panel = panel;
-            _scanner = scanner;
-            _turret = turret;
-            FloorLevel = floorLevel;
-            FloorName = floorName;
+            this.scanner = scanner;
+            this.turret = turret;
+            SecurityLevel = floorLevel;
+            this.floorName = floorName;
         }
 
         /// <summary>
@@ -35,38 +33,34 @@ namespace Area51
             // Check to make sure that calling person matches floor's personnel before acting
             if (person == Personnel[0])
             {
-                Console.WriteLine($"[Floor]: {FloorName} is relaying target({person.Id}) to turret...");
-                _turret.EliminateTarget(person, FloorName);
+                Console.WriteLine($"[Floor]: {floorName} is relaying target({person.Id}) to turret...");
+                turret.EliminateTarget(person, floorName);
             }
             // This should never happen!
             else
             {
-                Console.WriteLine("[Floor]: Target " + person.Id + " is no longer on " + this.FloorName + "!");
+                Console.WriteLine("[Floor]: Target " + person.Id + " is no longer on " + this.floorName + "!");
             }
         }
 
-        public IPerson SendScanResult()
-        {
-            return _scanner.SendScanResult();
-        }
-
-        public void SpawnNewPerson(int numberOfClearanceLevels, Floor spawnFloor, List<Floor> floors, int id)
+        public IPerson SpawnNewPerson(int numberOfClearanceLevels, Floor spawnFloor, List<Floor> floors, int id)
         {
             IPerson person = Factory.CreatePerson(numberOfClearanceLevels, spawnFloor, floors, id);
             Personnel.Add(person);
+            return person;
         }
 
         public void CallElevator(Elevator elevator)
         {
             if (CalledElevator == false)
             {
-                Console.WriteLine("[Floor]: " + FloorName + " has called Elevator");
+                Console.WriteLine("[Floor]: " + floorName + " has called Elevator");
                 CalledElevator = true;
                 elevator.AddCallToQueue(this);
             }
             else
             {
-                Console.WriteLine("[Floor]: " + FloorName + " has already called elevator");
+                Console.WriteLine("[Floor]: " + floorName + " has already called elevator");
             }
         }
 
@@ -80,7 +74,7 @@ namespace Area51
             if (person == Personnel[0])
             {
                 Personnel.Remove(person);
-                Console.WriteLine($"[Floor]: {person.Id} is no longer on {(FloorName == "Ground" ? FloorName + " Floor" : "Floor " + FloorName)}.");
+                Console.WriteLine($"[Floor]: {person.Id} has left {(floorName == "Ground" ? floorName + " Floor" : "Floor " + floorName)}.");
             }
         }
     }

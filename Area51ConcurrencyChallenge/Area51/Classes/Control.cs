@@ -7,20 +7,24 @@ namespace Area51
 {
     public class Control
     {
-        private readonly Elevator _elevator;
-        private readonly Floor _defaultFloor;
-        private Floor elevatorsCurrentFloor;
+        public readonly Elevator elevator;
+        public readonly Floor defaultFloor;
+        public Floor elevatorsCurrentFloor;
         public FloorPanel floorPanel = new FloorPanel();
 
         public Control(Elevator elevator, Floor defaultFloor)
         {
-            _elevator = elevator;
-            _defaultFloor = defaultFloor;
+            this.elevator = elevator;
+            this.defaultFloor = defaultFloor;
         }
 
+        /// <summary>
+        /// Returns the floor that the elevator has moved to.
+        /// </summary>
+        /// <returns></returns>
         public Floor MoveElevator()
         {
-            elevatorsCurrentFloor = _elevator.MoveToNextFloorInQueue();
+            elevatorsCurrentFloor = elevator.MoveToNextFloorInQueue();
             return elevatorsCurrentFloor;
         }
 
@@ -31,7 +35,7 @@ namespace Area51
         /// <param name="floor">Should be the floor that elevator was called to</param>
         public void RetrieveScanResult(Floor floor)
         {
-            IPerson person = floor._scanner.SendScanResult();
+            IPerson person = floor.scanner.SendScanResult();
             CheckCertificate(person);
         }
 
@@ -45,25 +49,30 @@ namespace Area51
                 Console.WriteLine("[Control]: Giving kill order to turret. Target is {0}", person.Id);
                 person.SpawnFloor.RelayKillOrder(person);
                 // Wait for kill confirm, because if person is in elevator it can't just go to next floor
-                bool killConfirmed = person.SpawnFloor._turret.ConfirmKill(person);
+                bool killConfirmed = person.SpawnFloor.turret.ConfirmKill(person);
                 if (killConfirmed)
                 {
-                    person.SpawnFloor.RemovePersonFromFloor(person);
+                    Console.WriteLine($"[Control]: Kill confirmation received. Dispatching cleanup team.");
                 }
-                // TODO: move elevator to next in queue
+                // Shouldn't happen
+                else
+                {
+                    Console.WriteLine("[Control]: Kill confirm not recieved!");
+                }
+                elevator.MoveToNextFloorInQueue();
             }
             else
             {
                 // Staff
                 Console.WriteLine($"[Control]: {person.Id} is a verified staff member of AREA 51.");
-                bool requestAccepted = floorPanel.HandleRequest(_elevator, person);
+                bool requestAccepted = floorPanel.HandleRequest(elevator, person);
                 // If request not accepted
                 if (requestAccepted == false)
                 {
                     RedirectNonClearedPersonnel(person);
                 }
 
-                elevatorsCurrentFloor = _elevator.MoveToNextFloorInQueue();
+                elevatorsCurrentFloor = elevator.MoveToNextFloorInQueue();
             }
         }
 
@@ -74,27 +83,27 @@ namespace Area51
         private void RedirectNonClearedPersonnel(IPerson person)
         {
             // Spawned on floor with no clearance - reroute to removal
-            if (person.SecurityCertificate < person.SpawnFloor.FloorLevel)
+            if (person.SecurityCertificate < person.SpawnFloor.SecurityLevel)
             {
-                Console.WriteLine($"[Control]: No security clearance to current floor. Security called to escort {person.Id} to tortu... interrogation facility.");
-                _elevator.ExitPersonInElevator();
-                _elevator.CurrentFloor.RemovePersonFromFloor(person);
+                Console.WriteLine($"[Control]: Also no security clearance to current floor. Security called to escort {person.Id} to tortu... interrogation facility.");
+                elevator.ExitPersonInElevator();
+                elevator.CurrentFloor.RemovePersonFromFloor(person);
             }
             // Wants access to floor without clearance - reroute to upper most floor
             else
             {
                 // Don't move elevator if spawnfloor is default floor
-                if (person.SpawnFloor == _defaultFloor)
+                if (person.SpawnFloor == defaultFloor)
                 {
                     Console.WriteLine($"[Control]: {person.Id} has no clearance to requested floor. Elevator won't move until {person.Id} leaves elevator");
-                    _elevator.ExitPersonInElevator();
+                    elevator.ExitPersonInElevator();
                     person.SpawnFloor.RemovePersonFromFloor(person);
                 }
                 // Spawnfloor is different from default floor
                 else
                 {
                     Console.WriteLine($"[Control]: No security clearance to requested floor. Sending elevator to default floor. {person.Id} is advised to contact the administration's office.");
-                    _elevator.AddToFirstInQueue(_defaultFloor);
+                    elevator.AddFloorToTopOfQueue(defaultFloor);
                 }
             }
         }

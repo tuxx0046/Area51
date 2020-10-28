@@ -17,7 +17,7 @@ namespace Area51
             // Make sure that the target should be eliminated
             if (person.MarkedForTermination)
             {
-                Console.WriteLine($"[Turret] {floorName} turret commencing target elimination...");
+                Console.WriteLine($"[Turret] {floorName} turret commencing target elimination... (3sec)");
                 // Takes time to kill target
                 Thread.Sleep(3000);
 
@@ -34,7 +34,7 @@ namespace Area51
         {
             if (person.IsDead)
             {
-                Console.WriteLine($"[Turret]: Sends kill confirmation.");
+                Console.WriteLine($"[Turret]: Sends kill confirmation to Control.");
                 return true;
             }
             // This should not happen

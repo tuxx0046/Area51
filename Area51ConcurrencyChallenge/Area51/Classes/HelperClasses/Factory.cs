@@ -7,9 +7,9 @@ namespace Area51
 {
     public static class Factory
     {
+        static Random rnd = new Random();
         public static IPerson CreatePerson(int numberOfClearanceLevels, Floor spawnFloor, List<Floor> floors, int personnelId)
         {
-            Random rnd = new Random();
             int clearanceLevel = rnd.Next(0, numberOfClearanceLevels);
             int targetFloor;
             // Don't allow target floor to be equal to spawn floor
@@ -17,14 +17,14 @@ namespace Area51
             {
                 targetFloor = rnd.Next(0, floors.Count);
             }
-            while (targetFloor == spawnFloor.FloorLevel);
+            while (floors[targetFloor] == spawnFloor);
 
             return new Personnel(clearanceLevel, floors[targetFloor], spawnFloor, personnelId);
         }
 
         public static Floor CreateFloor(int floorLevel, string floorName)
         {
-            return new Floor(CreatePanel(), CreateScannner(), CreateTurret(), floorLevel, floorName);
+            return new Floor(CreateScannner(), CreateTurret(), floorLevel, floorName);
         }
 
         public static IScanner CreateScannner()
@@ -35,11 +35,6 @@ namespace Area51
         public static ITurret CreateTurret()
         {
             return new CeilingTurret();
-        }
-
-        public static IPanel CreatePanel()
-        {
-            return new Panel();
         }
     }
 }
