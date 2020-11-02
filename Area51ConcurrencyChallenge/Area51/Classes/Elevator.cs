@@ -26,7 +26,7 @@ namespace Area51.Classes
             {
                 personInElevator.SpawnFloor.RemovePersonFromFloor(personInElevator);
             }
-            // Make sure that Floor queue is not empty
+            // Make sure that Floor queue is not empty so it has a reason to move
             if (_queue.Count > 0)
             {
                 // TODO: Rethink if floor calls can stack or not. For now, only one call per floor, no queueing
@@ -36,8 +36,8 @@ namespace Area51.Classes
                 }
                 // Set target floor to the first in queue
                 TargetFloor = _queue[0];
-                Console.WriteLine("[Elevator]: Elevator is moving to " + TargetFloor.floorName + "... (3sec)");
-                Thread.Sleep(3000);
+                Console.WriteLine("[Elevator]: Elevator is moving to " + TargetFloor.floorName + "... (1sec)");
+                Thread.Sleep(1000);
 
                 ArrivedAtFloor();
                 return CurrentFloor;
@@ -54,7 +54,9 @@ namespace Area51.Classes
         /// </summary>
         public void ExitPersonInElevator()
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("[Elevator]: " + personInElevator.Id + " has exited elevator");
+            Console.ResetColor();
             personInElevator = null;
         }
 
@@ -68,6 +70,11 @@ namespace Area51.Classes
             CurrentFloor = TargetFloor;
             //Remove current floor from queue
             _queue.RemoveAt(0);
+
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine("[Elevator]: Queue has been updated");
+            Console.WriteLine("[Elevator]: In queue: " + _queue.Count);
+            Console.ResetColor();
 
             // Remove person from elevator if any
             if (personInElevator != null)

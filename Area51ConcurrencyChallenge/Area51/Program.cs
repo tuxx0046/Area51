@@ -20,6 +20,8 @@ namespace Area51
             Elevator elevator = new Elevator();
             Control control = new Control(elevator, floors[0]);
 
+
+
             int numberofSpawns = 5;
             #region Test SpawnedPersonnel
             // Create random personnel
@@ -29,7 +31,7 @@ namespace Area51
                 personnel.Add(SpawnPersonOnRandomFloor(i, floors, numberOfClearanceLevels));
             }
 
-            while (numberofSpawns > 0)
+            while (true)
             {
                 foreach (IPerson person in personnel)
                 {
@@ -40,26 +42,44 @@ namespace Area51
                         person.SpawnFloor.scanner.ScanPerson(person);
                     }
                 }
-                
-                elevator.ShowElevatorQueue();
-                Floor floorThatCalled = control.MoveElevator();
-                IPerson caller = floorThatCalled.Personnel[0];
-                // Make sure that the elevator is in the correct floor
-                if (caller.HasCalledElevator && elevator.CurrentFloor == caller.SpawnFloor)
-                {
-                    caller.EnterElevator(elevator);
-                }
 
-                control.RetrieveScanResult(floorThatCalled);
+                elevator.ShowElevatorQueue();
+                Floor floorThatCalled = elevator.MoveToNextFloorInQueue();
+
+                if (floorThatCalled != null)
+                {
+                    IPerson caller = floorThatCalled.Personnel[0];
+                    // Make sure that the elevator is in the correct floor
+                    if (caller.HasCalledElevator && elevator.CurrentFloor == caller.SpawnFloor)
+                    {
+                        caller.EnterElevator(elevator);
+                    }
+
+                    control.RetrieveScanResult(floorThatCalled);
+                }
 
                 // Check floors after elevator movement
                 CheckFloorsForPersonnel(floors);
                 numberofSpawns--;
 
+                // Count personnel left waiting for elevator
+                int amountLeft = 0;
+                foreach (var floor in floors)
+                {
+                    amountLeft += floor.Personnel.Count;
+                }
+
+                // info
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Personnel waiting: " + amountLeft);
+                elevator.ShowElevatorQueue();
+                Console.WriteLine("---------------Next loop---------------press enter");
+                Console.ResetColor();
                 Console.ReadKey();
+
             }
 
-            
+
             #endregion
 
             #region Test individual types of personnel

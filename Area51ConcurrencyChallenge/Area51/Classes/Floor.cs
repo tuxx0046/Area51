@@ -52,16 +52,16 @@ namespace Area51
 
         public void CallElevator(Elevator elevator)
         {
-            if (CalledElevator == false)
-            {
-                Console.WriteLine("[Floor]: " + floorName + " has called Elevator");
-                CalledElevator = true;
+            //if (CalledElevator == false)
+            //{
+            //    Console.WriteLine("[Floor]: " + floorName + " has called Elevator");
+            //    CalledElevator = true;
                 elevator.AddCallToQueue(this);
-            }
-            else
-            {
-                Console.WriteLine("[Floor]: " + floorName + " has already called elevator");
-            }
+            //}
+            //else
+            //{
+            //    Console.WriteLine("[Floor]: " + floorName + " has already called elevator");
+            //}
         }
 
         public void UnCallElevator()
@@ -71,11 +71,11 @@ namespace Area51
 
         public void RemovePersonFromFloor(IPerson person)
         {
-            if (person == Personnel[0])
-            {
+            //if (person == Personnel[0])
+            //{
                 Personnel.Remove(person);
                 Console.WriteLine($"[Floor]: {person.Id} has left {(floorName == "Ground" ? floorName + " Floor" : "Floor " + floorName)}.");
-            }
+            //}
         }
     }
 }

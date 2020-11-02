@@ -53,13 +53,15 @@ namespace Area51
                 if (killConfirmed)
                 {
                     Console.WriteLine($"[Control]: Kill confirmation received. Dispatching cleanup team.");
+                    elevator.ExitPersonInElevator();
+                    person.SpawnFloor.RemovePersonFromFloor(person);
                 }
                 // Shouldn't happen
                 else
                 {
                     Console.WriteLine("[Control]: Kill confirm not recieved!");
                 }
-                elevator.MoveToNextFloorInQueue();
+                //elevatorsCurrentFloor = elevator.MoveToNextFloorInQueue();
             }
             else
             {
@@ -70,9 +72,13 @@ namespace Area51
                 if (requestAccepted == false)
                 {
                     RedirectNonClearedPersonnel(person);
+                    // If redirection happens, elevator should not move but wait for next loop and move there
                 }
+                else
+                {
+                    elevatorsCurrentFloor = elevator.MoveToNextFloorInQueue();
 
-                elevatorsCurrentFloor = elevator.MoveToNextFloorInQueue();
+                }
             }
         }
 
@@ -85,7 +91,7 @@ namespace Area51
             // Spawned on floor with no clearance - reroute to removal
             if (person.SecurityCertificate < person.SpawnFloor.SecurityLevel)
             {
-                Console.WriteLine($"[Control]: Also no security clearance to current floor. Security called to escort {person.Id} to tortu... interrogation facility.");
+                Console.WriteLine($"[Control]: Also no security clearance to current floor. Security called to escort {person.Id} to Security's Office.");
                 elevator.ExitPersonInElevator();
                 elevator.CurrentFloor.RemovePersonFromFloor(person);
             }
@@ -104,6 +110,7 @@ namespace Area51
                 {
                     Console.WriteLine($"[Control]: No security clearance to requested floor. Sending elevator to default floor. {person.Id} is advised to contact the administration's office.");
                     elevator.AddFloorToTopOfQueue(defaultFloor);
+                    elevator.MoveToNextFloorInQueue();
                 }
             }
         }

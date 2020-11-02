@@ -38,7 +38,7 @@ namespace Area51
             {
                 Console.WriteLine("[Personnel]: " + Id + " has already called elevator");
             }
-            
+
         }
 
         public void EnterElevator(Elevator elevator)
@@ -57,7 +57,9 @@ namespace Area51
         /// </summary>
         public void Die()
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"[Personnel]: The intruder {Id} has died");
+            Console.ResetColor();
             IsDead = true;
         }
 
