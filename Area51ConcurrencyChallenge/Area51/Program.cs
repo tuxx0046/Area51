@@ -167,14 +167,14 @@ namespace Area51
             }
         }
 
-        public async static Task<IPerson> SpawnPersonOnRandomFloor(int id, List<Floor> floors, int numberOfClearanceLevels)
+        public static Task<IPerson> SpawnPersonOnRandomFloor(int id, List<Floor> floors, int numberOfClearanceLevels)
         {
             int randomFloor;
             if (floors.Count > 0)
             {
                 randomFloor = rnd.Next(0, floors.Count);
                 IPerson person = floors[randomFloor].SpawnNewPerson(numberOfClearanceLevels, floors[randomFloor], floors, id);
-                return person;
+                return (Task<IPerson>)person;
             }
             return null;
         }
