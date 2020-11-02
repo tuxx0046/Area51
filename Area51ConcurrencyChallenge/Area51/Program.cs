@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
+using System.Threading.Tasks;
 using Area51.Classes;
 namespace Area51
 {
@@ -20,13 +21,15 @@ namespace Area51
             Elevator elevator = new Elevator();
             Control control = new Control(elevator, floors[0]);
 
+            Task<IPerson> task = Task.Run(() => SpawnPersonOnRandomFloor());
 
 
-            int numberofSpawns = 5;
             #region Test SpawnedPersonnel
+            /*
             // Create random personnel
             //SpawnPersonOnRandomFloor(1, floors, numberOfClearanceLevels);
-            for (int i = 0; i < 5; i++)
+            int numberofSpawns = 20;
+            for (int i = 0; i < numberofSpawns; i++)
             {
                 personnel.Add(SpawnPersonOnRandomFloor(i, floors, numberOfClearanceLevels));
             }
@@ -60,7 +63,6 @@ namespace Area51
 
                 // Check floors after elevator movement
                 CheckFloorsForPersonnel(floors);
-                numberofSpawns--;
 
                 // Count personnel left waiting for elevator
                 int amountLeft = 0;
@@ -78,8 +80,7 @@ namespace Area51
                 Console.ReadKey();
 
             }
-
-
+            */
             #endregion
 
             #region Test individual types of personnel
@@ -158,7 +159,15 @@ namespace Area51
             floors.Add(Factory.CreateFloor(4, "B3"));
         }
 
-        public static IPerson SpawnPersonOnRandomFloor(int id, List<Floor> floors, int numberOfClearanceLevels)
+        public async Task InitiateSpawning(List<Floor> floors, List<IPerson> personnel, int numberOfClearanceLevels, int numberOfSpawns)
+        {
+            for (int i = 0; i < numberOfSpawns; i++)
+            {
+                IPerson p = await SpawnPersonOnRandomFloor(i, floors, numberOfClearanceLevels);
+            }
+        }
+
+        public async static Task<IPerson> SpawnPersonOnRandomFloor(int id, List<Floor> floors, int numberOfClearanceLevels)
         {
             int randomFloor;
             if (floors.Count > 0)
