@@ -21,9 +21,11 @@ namespace Area51
             TargetFloor = targetFloor;
             SpawnFloor = spawnFloor;
             Id = clearanceLevel > 0 ? "Staff" + staffId.ToString() : "Staff" + staffId.ToString() + "(intruder)";
+            Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.WriteLine($"[Personnel]: {Id} with clearance level {SecurityCertificate} " +
                 $"just spawned on {(SpawnFloor.floorName == "Ground" ? "Ground Floor" : "Floor " + SpawnFloor.floorName)} " +
                 $"and wants to go to {(TargetFloor.floorName == "Ground" ? "Ground Floor" : "Floor " + TargetFloor.floorName)}.");
+            Console.ResetColor();
         }
 
         public void CallElevator(Elevator elevator)

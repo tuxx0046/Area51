@@ -20,9 +20,76 @@ namespace Area51
             numberOfClearanceLevels = floors.Count + 1;
             Elevator elevator = new Elevator();
             Control control = new Control(elevator, floors[0]);
+            int numberOfSpawns = 20;
 
-            Task<IPerson> task = Task.Run(() => SpawnPersonOnRandomFloor());
+            Console.WriteLine($"Spawning {numberOfSpawns} persons");
+            InitiateSpawning(floors, personnel, numberOfClearanceLevels, numberOfSpawns);
 
+            bool runElevator = true;
+            while (runElevator)
+            {
+                // Putting this sleep in here to avoid elevator checking empty personnel list without pause 
+                if (personnel.Count == 0)
+                {
+                    Thread.Sleep(3000);
+                }
+
+                // Using ToList() here to create a new list to iterate through for each loop, which avoids "list has been modified" exception
+                foreach (IPerson person in personnel.ToList())
+                {
+                    // Check if there's af person on floor and the person is first in line 
+                    if (person.SpawnFloor.Personnel.Count > 0 && person == person.SpawnFloor.Personnel[0])
+                    {
+                        person.CallElevator(elevator);
+                        person.SpawnFloor.scanner.ScanPerson(person);
+                    }
+                }
+
+                elevator.ShowElevatorQueue();
+                Floor floorThatCalled = elevator.MoveToNextFloorInQueue();
+
+                if (floorThatCalled != null)
+                {
+                    IPerson caller = floorThatCalled.Personnel[0];
+                    // Make sure that the elevator is in the correct floor
+                    if (caller.HasCalledElevator && elevator.CurrentFloor == caller.SpawnFloor)
+                    {
+                        caller.EnterElevator(elevator);
+                    }
+
+                    control.RetrieveScanResult(floorThatCalled);
+                }
+
+                // Check floors after elevator movement
+                CheckFloorsForPersonnel(floors);
+
+                // Count personnel left waiting for elevator
+                int amountLeft = 0;
+                foreach (var floor in floors)
+                {
+                    amountLeft += floor.Personnel.Count;
+                }
+
+                // info
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Personnel waiting: " + amountLeft);
+                elevator.ShowElevatorQueue();
+
+                // Check if loop should continue
+                if (amountLeft == 0 && personnel.Count == numberOfSpawns)
+                {
+                    runElevator = false;
+                }
+
+                Console.WriteLine("---------------Next loop---------------press enter");
+                Console.ResetColor();
+            }
+
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.WriteLine($"{personnel.Count} has been spawned, which corresponds to the {numberOfSpawns} number of spawns set up for testing.");
+            Console.WriteLine($"Testing of Area 51 elevator security system completed.");
+            Console.ResetColor();
 
             #region Test SpawnedPersonnel
             /*
@@ -159,22 +226,23 @@ namespace Area51
             floors.Add(Factory.CreateFloor(4, "B3"));
         }
 
-        public async Task InitiateSpawning(List<Floor> floors, List<IPerson> personnel, int numberOfClearanceLevels, int numberOfSpawns)
+        public async static Task InitiateSpawning(List<Floor> floors, List<IPerson> personnel, int numberOfClearanceLevels, int numberOfSpawns)
         {
             for (int i = 0; i < numberOfSpawns; i++)
             {
-                IPerson p = await SpawnPersonOnRandomFloor(i, floors, numberOfClearanceLevels);
+                await Task.Delay(rnd.Next(500,3500));
+                personnel.Add(SpawnPersonOnRandomFloor(i, floors, numberOfClearanceLevels));
             }
         }
 
-        public static Task<IPerson> SpawnPersonOnRandomFloor(int id, List<Floor> floors, int numberOfClearanceLevels)
+        public static IPerson SpawnPersonOnRandomFloor(int id, List<Floor> floors, int numberOfClearanceLevels)
         {
             int randomFloor;
             if (floors.Count > 0)
             {
                 randomFloor = rnd.Next(0, floors.Count);
                 IPerson person = floors[randomFloor].SpawnNewPerson(numberOfClearanceLevels, floors[randomFloor], floors, id);
-                return (Task<IPerson>)person;
+                return person;
             }
             return null;
         }
