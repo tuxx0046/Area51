@@ -7,7 +7,7 @@ Intruders have been using the elevator without problem, and now it is the progra
 
 ## Requirements:
 **Create a loop that spawns 20 people randomly.**
-*Spawning should happen independent(asynchronously) from Elevator movement.**  
+*Spawning should happen independent(asynchronously) from Elevator movement.*
 
 ### Solution should be object oriented
 
@@ -15,7 +15,7 @@ Intruders have been using the elevator without problem, and now it is the progra
 Number of floors are optional, but each floor should have:
 *a scanner.*
 *a Turret.*
-*a panel.* (to call the elevator)
+*a panel* (to call the elevator).
 
 ### Panel
 *Should be able to request the elevator.*
