@@ -1,4 +1,4 @@
-# Area51
+# AREA 51
 A small challenge with the goal of learning the basics of concurrency in programming with C#, and should also train the object oriented thought process.
 Project is estimated to take 10 days to solve. 
 
