@@ -81,7 +81,7 @@ namespace Area51
                     runElevator = false;
                 }
 
-                Console.WriteLine("---------------Next loop---------------press enter");
+                Console.WriteLine("---------------Next loop---------------");
                 Console.ResetColor();
             }
 
@@ -259,7 +259,8 @@ namespace Area51
                 }
                 else
                 {
-                    Console.WriteLine($"[{floors[i].floorName}]: No one on floor");
+                    Console.WriteLine($"[{floors[i].floorName}]: No one on floor. Going in standby mode.");
+                    Thread.Sleep(2000);
                 }
             }
         }
