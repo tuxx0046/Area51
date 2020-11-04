@@ -1,5 +1,5 @@
 # AREA 51
-A small challenge with the goal of learning the basics of concurrency in programming with C#, and should also train the object oriented thought process.
+Solved a small challenge that had the goal of learning the basics of concurrency in programming with C#, and should also to practice the object oriented thought process.
 Project is estimated to take 10 days to solve. 
 
 The project description (in the pdf file) is in danish, but to summarize, Area 51 has faced some problems with security. 
