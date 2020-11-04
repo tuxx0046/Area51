@@ -37,7 +37,7 @@ namespace Area51
                 // Using ToList() here to create a new list to iterate through for each loop, which avoids "list has been modified" exception
                 foreach (IPerson person in personnel.ToList())
                 {
-                    // Check if there's af person on floor and the person is first in line 
+                    // Check if there's a person on floor and the person is first in line 
                     if (person.SpawnFloor.Personnel.Count > 0 && person == person.SpawnFloor.Personnel[0])
                     {
                         person.CallElevator(elevator);
