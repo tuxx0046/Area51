@@ -13,9 +13,9 @@ namespace Area51
         static Random rnd = new Random();
         static void Main(string[] args)
         {
-            List<Floor> floors = new List<Floor>();
             List<IPerson> personnel = new List<IPerson>();
             int numberOfClearanceLevels;
+            List<Floor> floors = new List<Floor>();
             AddFloors(floors);
             numberOfClearanceLevels = floors.Count + 1;
             Elevator elevator = new Elevator();
@@ -23,7 +23,9 @@ namespace Area51
             int numberOfSpawns = 20;
 
             Console.WriteLine($"Spawning {numberOfSpawns} persons");
-            InitiateSpawning(floors, personnel, numberOfClearanceLevels, numberOfSpawns);
+            //Thread t = new Thread(() => { InitiateSpawning(floors, personnel, numberOfClearanceLevels, numberOfSpawns); });
+            //t.Start();
+            new Thread(() => { InitiateSpawning(floors, personnel, numberOfClearanceLevels, numberOfSpawns); }).Start();
 
             bool runElevator = true;
             while (runElevator)
@@ -85,6 +87,7 @@ namespace Area51
                 Console.ResetColor();
             }
 
+            // Loop ended
             Console.ForegroundColor = ConsoleColor.Black;
             Console.BackgroundColor = ConsoleColor.White;
             Console.WriteLine($"{personnel.Count} has been spawned, which corresponds to the {numberOfSpawns} number of spawns set up for testing.");
@@ -226,11 +229,11 @@ namespace Area51
             floors.Add(Factory.CreateFloor(4, "B3"));
         }
 
-        public async static Task InitiateSpawning(List<Floor> floors, List<IPerson> personnel, int numberOfClearanceLevels, int numberOfSpawns)
+        public static void InitiateSpawning(List<Floor> floors, List<IPerson> personnel, int numberOfClearanceLevels, int numberOfSpawns)
         {
             for (int i = 0; i < numberOfSpawns; i++)
             {
-                await Task.Delay(rnd.Next(500,3500));
+                Thread.Sleep(rnd.Next(500,3500));
                 personnel.Add(SpawnPersonOnRandomFloor(i, floors, numberOfClearanceLevels));
             }
         }

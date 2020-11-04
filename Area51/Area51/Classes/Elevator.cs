@@ -71,10 +71,10 @@ namespace Area51.Classes
             //Remove current floor from queue
             _queue.RemoveAt(0);
 
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            //Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine("[Elevator]: Queue has been updated");
             Console.WriteLine("[Elevator]: In queue: " + _queue.Count);
-            Console.ResetColor();
+            //Console.ResetColor();
 
             // Remove person from elevator if any
             if (personInElevator != null)
