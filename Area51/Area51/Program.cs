@@ -22,7 +22,7 @@ namespace Area51
             Control control = new Control(elevator, floors[0]);
             int numberOfSpawns = 20;
 
-            Console.WriteLine($"Spawning {numberOfSpawns} persons");
+            Console.WriteLine($"Spawning {numberOfSpawns} people");
             //Thread t = new Thread(() => { InitiateSpawning(floors, personnel, numberOfClearanceLevels, numberOfSpawns); });
             //t.Start();
             new Thread(() => { InitiateSpawning(floors, personnel, numberOfClearanceLevels, numberOfSpawns); }).Start();
@@ -39,7 +39,6 @@ namespace Area51
                 // Using ToList() here to create a new list to iterate through for each loop, which avoids "list has been modified" exception
                 foreach (IPerson person in personnel.ToList())
                 {
-                    // Check if there's a person on floor and the person is first in line 
                     if (person.SpawnFloor.Personnel.Count > 0 && person == person.SpawnFloor.Personnel[0])
                     {
                         person.CallElevator(elevator);
@@ -47,13 +46,12 @@ namespace Area51
                     }
                 }
 
-                elevator.ShowElevatorQueue();
-                Floor floorThatCalled = elevator.MoveToNextFloorInQueue();
+                control.elevator.ShowElevatorQueue();
+                Floor floorThatCalled = control.elevator.MoveToNextFloorInQueue();
 
                 if (floorThatCalled != null)
                 {
                     IPerson caller = floorThatCalled.Personnel[0];
-                    // Make sure that the elevator is in the correct floor
                     if (caller.HasCalledElevator && elevator.CurrentFloor == caller.SpawnFloor)
                     {
                         caller.EnterElevator(elevator);
@@ -62,7 +60,6 @@ namespace Area51
                     control.RetrieveScanResult(floorThatCalled);
                 }
 
-                // Check floors after elevator movement
                 CheckFloorsForPersonnel(floors);
 
                 // Count personnel left waiting for elevator
@@ -72,22 +69,19 @@ namespace Area51
                     amountLeft += floor.Personnel.Count;
                 }
 
-                // info
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Personnel waiting: " + amountLeft);
-                elevator.ShowElevatorQueue();
+                control.elevator.ShowElevatorQueue();
 
-                // Check if loop should continue
                 if (amountLeft == 0 && personnel.Count == numberOfSpawns)
                 {
                     runElevator = false;
                 }
 
-                Console.WriteLine("---------------Next loop---------------");
+                Console.WriteLine("--------------- Next loop ---------------");
                 Console.ResetColor();
             }
 
-            // Loop ended
             Console.ForegroundColor = ConsoleColor.Black;
             Console.BackgroundColor = ConsoleColor.White;
             Console.WriteLine($"{personnel.Count} has been spawned, which corresponds to the {numberOfSpawns} number of spawns set up for testing.");
@@ -227,6 +221,7 @@ namespace Area51
             floors.Add(Factory.CreateFloor(2, "B1"));
             floors.Add(Factory.CreateFloor(3, "B2"));
             floors.Add(Factory.CreateFloor(4, "B3"));
+            //floors.Add(Factory.CreateFloor(5, "B4"));
         }
 
         public static void InitiateSpawning(List<Floor> floors, List<IPerson> personnel, int numberOfClearanceLevels, int numberOfSpawns)
